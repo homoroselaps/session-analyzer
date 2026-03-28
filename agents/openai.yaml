@@ -1,0 +1,4 @@
+interface:
+  display_name: "Session Log Analyzer"
+  short_description: "Claude/Codex session log analysis"
+  default_prompt: "Use $session-analyzer to analyze Claude Code or Codex session logs by file, directory, or date."
