@@ -1,0 +1,8 @@
+# Default owners for everything
+*       @Tomatio13
+
+# Security-sensitive files
+SECURITY.md   @Tomatio13
+.github/      @Tomatio13
+package.json  @Tomatio13
+package-lock.json @Tomatio13
