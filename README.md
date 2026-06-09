@@ -1,7 +1,7 @@
 <h1 align="center">Session Analyzer</h1>
 
 <p align="center">
-  Claude Code と Codex のセッションログを自動判定で分析する Skill
+  A Skill that automatically analyzes Claude Code and Codex session logs
 </p>
 
 <p align="center">
@@ -12,85 +12,85 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/document-日本語-white.svg" alt="JA doc"/>
+  <img src="https://img.shields.io/badge/document-English-white.svg" alt="English doc"/>
 </p>
 
-Claude Code と Codex のセッションログを読み取り、何が起きたかをテキストレポートとして返します。
+Reads Claude Code and Codex session logs and returns a text report describing what happened.
 
-## 📊 ユーザが受け取るもの
+## 📊 What You Get
 
-この Skill を使うと、次のような情報がまとまった分析レポートを受け取れます。
+This Skill produces a consolidated analysis report with:
 
-- その日に何セッション・何ターン・何イベントあったか
-- どのツールを何回使ったか
-- どの Skill が呼ばれたか
-- トークンをどれくらい消費したか
-- 何時台に処理が集中したか
-- どのターンが遅かったか
-- どこでエラーが出たか
-- ターン間でどれくらい待機時間があったか
+- How many sessions, turns, and events occurred that day
+- Which tools were used and how often
+- Which Skills were called
+- How many tokens were consumed
+- Which hours had the most activity
+- Which turns were slowest
+- Where errors occurred
+- How much wait time elapsed between turns
 
-返却形式は、次のようなテキストレポートです。
+The output is a plain text report like this:
 
 ```text
 ============================================================
-Codex セッション分析: 2026-03-25
-対象ディレクトリ: ~/.codex/sessions/2026/03/25
-セッション数: 2
-期間: 2026-03-24 21:50 ~ 2026-03-24 22:22
-総時間: 0:32:23.832000
-イベント数: 475
-ターン数: 15
+Codex session analysis: 2026-03-25
+Target directory: ~/.codex/sessions/2026/03/25
+Session count: 2
+Period: 2026-03-24 21:50 ~ 2026-03-24 22:22
+Total time: 0:32:23.832000
+Events: 475
+Turns: 15
 ============================================================
 
-📊 ツール呼び出し統計
-📂 カテゴリ別
-🧩 Skill 呼び出し統計
-🔤 トークン使用量
-🕐 時間帯別ツール呼び出し
-🐌 最も時間がかかったターン TOP10
-❌ エラー統計
-⏱️ ターン間待機時間
+Tool call statistics
+By category
+Skill call statistics
+Token usage
+Tool calls by hour
+Top 10 slowest turns
+Error statistics
+Wait time between turns
 ```
 
-原則として、ユーザには Python の実行結果そのものを返します。要約だけで済ませず、分析レポート全文を見せる前提です。
+As a rule, return the Python output itself to the user. Do not reduce it to a summary unless the user explicitly asks for one.
 
-## 🚀 使い方
+## 🚀 Usage
 
-基本は `$session-analyzer` として呼びます。
+Invoke it as `$session-analyzer` by default.
 
-- `今日のセッションを分析して`
-- `2026-03-20 のログを分析して`
-- `この jsonl を分析して: /path/to/session.jsonl`
-- `このディレクトリを分析して: /path/to/session-dir`
+- `Analyze today's sessions`
+- `Analyze the logs for 2026-03-20`
+- `Analyze this jsonl: /path/to/session.jsonl`
+- `Analyze this directory: /path/to/session-dir`
 
-## ✨ できること
+## ✨ Capabilities
 
-- Claude Code / Codex の自動判定
-- 当日ログの自動分析
-- 日付指定での分析
-- 単一 `jsonl` ファイル、またはディレクトリ指定での分析
+- Auto-detect Claude Code or Codex
+- Analyze today's logs automatically
+- Analyze logs for a specific date
+- Analyze a single `jsonl` file or a directory
 
-## 🔍 自動判定のルール
+## 🔍 Auto-Detection Rules
 
-- 日付指定では、その日に使える Claude / Codex ログを探します。
-- 両方ある場合は、より新しい更新時刻を持つ方を優先します。
-- ファイル指定では、先頭イベントの形式とパスからソースを判定します。
-- ディレクトリ指定では、含まれる `.jsonl` を見てソースを判定します。
-- Codex の単一ファイルを渡した場合は、親ディレクトリ単位で分析します。
+- For date input, the analyzer searches for Claude and Codex logs available on that day.
+- If both exist, the source with the newer modification time wins.
+- For file input, the source is inferred from the first event and the path.
+- For directory input, the source is inferred from the contained `.jsonl` files.
+- For a single Codex file, analysis runs at the parent directory level.
 
-## 📁 ファイル構成
+## 📁 File Layout
 
 - `scripts/analyze_agent_sessions.py`
-  - 自動判定付きの共通入口
+  - Shared auto-detect entrypoint
 - `scripts/claude_session_adapter.py`
-  - Claude ログの変換
+  - Claude log adapter
 - `scripts/codex_session_adapter.py`
-  - Codex ログの変換
+  - Codex log adapter
 - `scripts/session_analysis_core.py`
-  - 共通の集計・表示ロジック
+  - Shared aggregation and rendering logic
 
-## 🧪 検証
+## 🧪 Validation
 
 ```bash
 cd ~/.codex/skills/session-analyzer/scripts

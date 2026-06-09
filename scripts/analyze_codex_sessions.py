@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Codex セッションログ (.jsonl) を日付単位で分析する。
+Analyze Codex session logs (.jsonl) by date.
 """
 
 from __future__ import annotations
@@ -29,7 +29,7 @@ def main():
     try:
         report = analyze_date_directory(date_label, session_dir)
     except FileNotFoundError:
-        print(f"セッションログが見つかりません: {session_dir}", file=sys.stderr)
+        print(f"Session log not found: {session_dir}", file=sys.stderr)
         sys.exit(1)
 
     print_report(

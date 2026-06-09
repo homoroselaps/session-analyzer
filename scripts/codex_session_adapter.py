@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Codex セッションログを共通分析構造へ変換する。
+Convert Codex session logs into the shared analysis structure.
 """
 
 from __future__ import annotations
@@ -353,10 +353,10 @@ def analyze_date_directory(date_label: str, session_dir: Path) -> dict:
         "skill_calls": skill_calls,
         "total_usage": build_usage(latest_usage),
         "summary_lines": [
-            f"対象ディレクトリ: {session_dir}",
-            f"セッション数: {len(session_files)}",
-            f"期間: {start_ts:%Y-%m-%d %H:%M} ~ {end_ts:%Y-%m-%d %H:%M}",
-            f"総時間: {end_ts - start_ts}",
+            f"Target directory: {session_dir}",
+            f"Session count: {len(session_files)}",
+            f"Period: {start_ts:%Y-%m-%d %H:%M} ~ {end_ts:%Y-%m-%d %H:%M}",
+            f"Total time: {end_ts - start_ts}",
         ],
-        "title": f"Codex セッション分析: {date_label}",
+        "title": f"Codex session analysis: {date_label}",
     }

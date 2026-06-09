@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-セッション分析の共通集計と表示処理。
+Shared aggregation and rendering logic for session analysis.
 """
 
 from __future__ import annotations
@@ -73,7 +73,7 @@ def print_tool_stats(turns: list[dict], classify_tool):
             if tool_call["error"]:
                 tool_errors[tool_call["name"]] += 1
 
-    print(f"\n📊 ツール呼び出し統計 (計 {len(all_tools)} 回)")
+    print(f"\nTool call statistics (total {len(all_tools)})")
     print("-" * 50)
     counts = Counter(all_tools)
     for name, count in counts.most_common():
@@ -84,11 +84,11 @@ def print_tool_stats(turns: list[dict], classify_tool):
         errors = tool_errors.get(name, 0)
         err_str = f" ⚠️ {errors}errors" if errors else ""
         print(
-            f"  {name:24s} {count:4d}回 ({pct:5.1f}%)  "
-            f"平均{avg:6.1f}s  合計{total:7.1f}s{err_str}"
+            f"  {name:24s} {count:4d} calls ({pct:5.1f}%)  "
+            f"avg {avg:6.1f}s  total {total:7.1f}s{err_str}"
         )
 
-    print("\n📂 カテゴリ別")
+    print("\nBy category")
     print("-" * 50)
     cat_counts = Counter(classify_tool(name) for name in all_tools)
     cat_durations = defaultdict(float)
@@ -96,17 +96,17 @@ def print_tool_stats(turns: list[dict], classify_tool):
         cat_durations[classify_tool(name)] += sum(durations)
     for category, count in cat_counts.most_common():
         print(
-            f"  {category:15s} {count:4d}回  合計{cat_durations.get(category, 0):7.1f}s"
+            f"  {category:15s} {count:4d} calls  total {cat_durations.get(category, 0):7.1f}s"
         )
 
     return tool_errors, len(all_tools)
 
 
 def print_skill_stats(skill_calls: list[dict]):
-    print(f"\n🧩 Skill 呼び出し統計 (計 {len(skill_calls)} 回)")
+    print(f"\nSkill call statistics (total {len(skill_calls)})")
     print("-" * 50)
     if not skill_calls:
-        print("  SKILL.md の読み込みは検出されませんでした")
+        print("  No SKILL.md reads detected")
         return
 
     skill_counts = Counter(call["skill"] for call in skill_calls)
@@ -128,27 +128,27 @@ def print_skill_stats(skill_calls: list[dict]):
         errors = skill_errors.get(name, 0)
         err_str = f" ⚠️ {errors}errors" if errors else ""
         print(
-            f"  {name:24s} {count:4d}回 ({pct:5.1f}%)  "
-            f"平均{avg:6.1f}s  合計{total:7.1f}s{err_str}"
+            f"  {name:24s} {count:4d} calls ({pct:5.1f}%)  "
+            f"avg {avg:6.1f}s  total {total:7.1f}s{err_str}"
         )
 
 
 def print_token_stats(total_usage: dict):
-    print("\n🔤 トークン使用量")
+    print("\nToken usage")
     print("-" * 50)
-    print(f"  入力:         {total_usage.get('input_tokens', 0):>12,} tokens")
+    print(f"  Input:        {total_usage.get('input_tokens', 0):>12,} tokens")
     print(
-        f"  キャッシュ:   {total_usage.get('cached_input_tokens', 0):>12,} tokens"
+        f"  Cached:       {total_usage.get('cached_input_tokens', 0):>12,} tokens"
     )
-    print(f"  出力:         {total_usage.get('output_tokens', 0):>12,} tokens")
+    print(f"  Output:       {total_usage.get('output_tokens', 0):>12,} tokens")
     print(
-        f"  推論出力:     {total_usage.get('reasoning_output_tokens', 0):>12,} tokens"
+        f"  Reasoning:    {total_usage.get('reasoning_output_tokens', 0):>12,} tokens"
     )
-    print(f"  合計:         {total_usage.get('total_tokens', 0):>12,} tokens")
+    print(f"  Total:        {total_usage.get('total_tokens', 0):>12,} tokens")
 
 
 def print_hourly_stats(turns: list[dict]):
-    print("\n🕐 時間帯別ツール呼び出し")
+    print("\nTool calls by hour")
     print("-" * 50)
     hour_counts = Counter()
     for turn in turns:
@@ -162,7 +162,7 @@ def print_hourly_stats(turns: list[dict]):
 
 
 def print_slowest_turns(turns: list[dict]):
-    print("\n🐌 最も時間がかかったターン TOP10")
+    print("\nTop 10 slowest turns")
     print("-" * 50)
     ranking = []
     for index, turn in enumerate(turns, 1):
@@ -198,16 +198,16 @@ def print_error_stats(tool_errors: Counter, total_tools: int, skill_calls: list[
     total_skill_errors = sum(1 for call in skill_calls if call["error"])
     error_rate = (total_errors / total_tools * 100) if total_tools else 0
 
-    print("\n❌ エラー統計")
+    print("\nError statistics")
     print("-" * 50)
-    print(f"  エラー数: {total_errors} / {total_tools} ({error_rate:.1f}%)")
+    print(f"  Errors: {total_errors} / {total_tools} ({error_rate:.1f}%)")
     for name, count in tool_errors.most_common():
-        print(f"    {name}: {count}回")
-    print(f"  Skillエラー数: {total_skill_errors} / {len(skill_calls)}")
+        print(f"    {name}: {count} calls")
+    print(f"  Skill errors: {total_skill_errors} / {len(skill_calls)}")
 
 
 def print_wait_stats(turns: list[dict]):
-    print("\n⏱️ ターン間待機時間 (ユーザー思考時間)")
+    print("\nWait time between turns (user think time)")
     print("-" * 50)
     waits = []
     for prev, curr in zip(turns, turns[1:]):
@@ -218,14 +218,14 @@ def print_wait_stats(turns: list[dict]):
             waits.append(wait)
 
     if not waits:
-        print("  待機時間は検出されませんでした")
+        print("  No wait time detected")
         return
 
     ordered = sorted(waits)
-    print(f"  平均: {sum(waits) / len(waits):.1f}s")
-    print(f"  中央値: {ordered[len(ordered) // 2]:.1f}s")
-    print(f"  最大: {max(waits):.1f}s")
-    print(f"  合計待機: {sum(waits) / 60:.1f}分")
+    print(f"  Average: {sum(waits) / len(waits):.1f}s")
+    print(f"  Median: {ordered[len(ordered) // 2]:.1f}s")
+    print(f"  Max: {max(waits):.1f}s")
+    print(f"  Total wait: {sum(waits) / 60:.1f} min")
 
 
 def print_report(
@@ -242,8 +242,8 @@ def print_report(
     print(title)
     for line in summary_lines:
         print(line)
-    print(f"イベント数: {event_total}")
-    print(f"ターン数: {len(turns)}")
+    print(f"Events: {event_total}")
+    print(f"Turns: {len(turns)}")
     print("=" * 60)
 
     tool_errors, total_tools = print_tool_stats(turns, classify_tool)

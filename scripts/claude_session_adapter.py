@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Claude Code セッションログを共通分析構造へ変換する。
+Convert Claude Code session logs into the shared analysis structure.
 """
 
 from __future__ import annotations
@@ -263,9 +263,9 @@ def analyze_session_file(session_path: Path) -> dict:
         "skill_calls": skill_calls,
         "total_usage": build_usage(turns),
         "summary_lines": [
-            f"セッション分析: {session_path.stem[:8]}...",
-            f"期間: {start:%Y-%m-%d %H:%M} ~ {end:%Y-%m-%d %H:%M}",
-            f"総時間: {end - start}",
+            f"Session analysis: {session_path.stem[:8]}...",
+            f"Period: {start:%Y-%m-%d %H:%M} ~ {end:%Y-%m-%d %H:%M}",
+            f"Total time: {end - start}",
         ],
     }
 
@@ -301,9 +301,9 @@ def analyze_files(target_label: str, session_files: list[Path]) -> dict:
         "skill_calls": skill_calls,
         "total_usage": build_usage(turns),
         "summary_lines": [
-            f"Claude セッション分析: {target_label}",
-            f"セッション数: {len(session_files)}",
-            f"期間: {start_ts:%Y-%m-%d %H:%M} ~ {end_ts:%Y-%m-%d %H:%M}",
-            f"総時間: {end_ts - start_ts}",
+            f"Claude session analysis: {target_label}",
+            f"Session count: {len(session_files)}",
+            f"Period: {start_ts:%Y-%m-%d %H:%M} ~ {end_ts:%Y-%m-%d %H:%M}",
+            f"Total time: {end_ts - start_ts}",
         ],
     }

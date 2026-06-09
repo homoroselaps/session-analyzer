@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Claude Code セッションログから分析データを抽出する。
-JSONLを直接読み込み、共通レポート形式で表示する。
+Extract analysis data from Claude Code session logs.
+Read JSONL directly and render the shared report format.
 """
 
 from __future__ import annotations
@@ -74,7 +74,7 @@ if __name__ == "__main__":
         analyze_target(args.target)
     except FileNotFoundError as exc:
         print(
-            f"セッションログが見つかりません: {exc.filename or args.target}",
+            f"Session log not found: {exc.filename or args.target}",
             file=sys.stderr,
         )
         sys.exit(1)

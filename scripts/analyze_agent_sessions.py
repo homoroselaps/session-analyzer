@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Claude Code / Codex のセッションログを自動判定して分析する。
+Automatically detect and analyze Claude Code and Codex session logs.
 """
 
 from __future__ import annotations
@@ -196,7 +196,7 @@ def main():
         else:
             run_codex(analyze_codex_date_directory(target_date.isoformat(), payload))
     except FileNotFoundError as exc:
-        print(f"セッションログが見つかりません: {exc}", file=sys.stderr)
+        print(f"Session log not found: {exc}", file=sys.stderr)
         sys.exit(1)
 
 
